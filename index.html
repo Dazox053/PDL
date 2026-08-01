@@ -3,15 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ref Akun - Hyper-Tech Interface</title>
+    <title>ACCOUNTING OS - Live Wallpaper</title>
     <style>
         :root {
-            --bg-abyss: #02040a;
-            --tech-blue: #00f2ff;
-            --tech-pink: #ff00f2;
-            --tech-gold: #ffd700;
-            --glass: rgba(10, 15, 25, 0.8);
-            --border-glow: rgba(0, 242, 255, 0.3);
+            --bg-main: #04080e;
+            --panel-bg: rgba(9, 16, 26, 0.75);
+            --border-color: rgba(0, 255, 204, 0.15);
+            
+            --c-aset: #10b981;
+            --c-utang: #ef4444;
+            --c-modal: #3b82f6;
+            --c-pendapatan: #f59e0b;
+            --c-beban: #a855f7;
+            
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
         }
 
         * {
@@ -19,424 +25,720 @@
             margin: 0;
             padding: 0;
             user-select: none;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
             width: 100vw;
             height: 100vh;
             overflow: hidden;
-            background-color: var(--bg-abyss);
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            color: white;
+            background-color: var(--bg-main);
+            color: var(--text-main);
             display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 16px;
+            gap: 16px;
             cursor: none;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 60%),
+                linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
         }
 
-        /* Animated Grid Background */
-        #canvas-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            opacity: 0.4;
-        }
-
-        .overlay-vignette {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle, transparent 20%, rgba(0,0,0,0.8) 100%);
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .main-ui {
-            position: relative;
-            z-index: 10;
-            width: 95vw;
-            height: 92vh;
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 220px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            justify-content: space-between;
+            backdrop-filter: blur(12px);
         }
 
-        /* HEADER HUD */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--c-aset);
+            margin-bottom: 24px;
+        }
+
+        .cube-icon {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--c-aset);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            border: 1px solid transparent;
+        }
+
+        .nav-item.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--c-aset);
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .quote-box {
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 2px solid var(--c-aset);
+            padding: 10px;
+            font-size: 10px;
+            color: #94a3b8;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .memory-boost {
+            font-size: 9px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 85%;
+            height: 100%;
+            background: var(--c-aset);
+            box-shadow: 0 0 8px var(--c-aset);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* HEADER */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 30px;
-            background: var(--glass);
-            border-left: 5px solid var(--tech-blue);
-            border-right: 5px solid var(--tech-pink);
-            clip-path: polygon(0 0, 98% 0, 100% 30%, 100% 100%, 2% 100%, 0 70%);
-            backdrop-filter: blur(10px);
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 24px;
+            backdrop-filter: blur(12px);
         }
 
-        .top-left h1 {
-            font-size: 24px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: var(--tech-blue);
-            text-shadow: 0 0 15px var(--tech-blue);
+        .header-title h1 {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            background: linear-gradient(90deg, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .top-left p {
+        .header-title p {
             font-size: 10px;
-            color: #aaa;
+            letter-spacing: 4px;
+            color: var(--c-aset);
+            margin-top: 2px;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 10px;
+            color: var(--c-aset);
+            font-weight: 700;
+        }
+
+        .clock-box {
+            text-align: right;
+            font-family: monospace;
+        }
+
+        .clock-time {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .clock-date {
+            font-size: 9px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        /* ACCOUNT MAP GRID */
+        .section-label {
+            font-size: 10px;
+            font-weight: 800;
             letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .hud-clock {
-            font-family: 'Consolas', monospace;
-            font-size: 32px;
-            font-weight: bold;
-            color: white;
-            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        .section-label::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--c-aset);
+            border-radius: 50%;
+            box-shadow: 0 0 6px var(--c-aset);
         }
 
-        /* GRID SYSTEM */
-        .grid-container {
+        .account-map-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(4, 1fr);
-            gap: 15px;
-            flex-grow: 1;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
         }
 
-        .tech-card {
-            background: var(--glass);
-            border: 1px solid rgba(255,255,255,0.05);
-            position: relative;
-            padding: 20px;
+        .map-card {
+            background: var(--panel-bg);
+            border-radius: 10px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative;
             overflow: hidden;
-            transition: 0.3s;
-            animation: cardEntrance 0.8s ease-out backwards;
+            backdrop-filter: blur(12px);
+            height: 210px;
         }
 
-        @keyframes cardEntrance {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        /* Electric Moving Border */
-        .tech-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, var(--tech-blue), transparent);
-            width: 50%; height: 2px;
-            animation: scanLine 3s linear infinite;
-        }
-
-        @keyframes scanLine {
-            0% { top: 0; left: -50%; }
-            50% { top: 0; left: 100%; }
-            50.01% { top: 100%; left: 100%; transform: rotate(180deg); }
-            100% { top: 100%; left: -50%; transform: rotate(180deg); }
-        }
+        .map-card.aset { border: 1px solid rgba(16, 185, 129, 0.3); }
+        .map-card.utang { border: 1px solid rgba(239, 68, 68, 0.3); }
+        .map-card.modal { border: 1px solid rgba(59, 130, 246, 0.3); }
+        .map-card.pendapatan { border: 1px solid rgba(245, 158, 11, 0.3); }
+        .map-card.beban { border: 1px solid rgba(168, 85, 247, 0.3); }
 
         .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
             margin-bottom: 10px;
         }
 
-        .ref-num {
-            font-family: 'Consolas', monospace;
-            font-size: 28px;
+        .card-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .card-title {
+            font-size: 14px;
             font-weight: 900;
-            color: var(--tech-gold);
+            letter-spacing: 2px;
         }
 
-        .type-tag {
-            font-size: 9px;
-            padding: 3px 8px;
-            border: 1px solid currentColor;
-            text-transform: uppercase;
-            font-weight: bold;
+        .map-card.aset .card-title { color: var(--c-aset); }
+        .map-card.utang .card-title { color: var(--c-utang); }
+        .map-card.modal .card-title { color: var(--c-modal); }
+        .map-card.pendapatan .card-title { color: var(--c-pendapatan); }
+        .map-card.beban .card-title { color: var(--c-beban); }
+
+        .balance-tag {
+            font-size: 8px;
+            color: var(--text-muted);
+            margin-top: 2px;
         }
 
-        .debit-style { color: var(--tech-blue); border-color: var(--tech-blue); box-shadow: inset 0 0 10px rgba(0,242,255,0.2); }
-        .kredit-style { color: var(--tech-pink); border-color: var(--tech-pink); box-shadow: inset 0 0 10px rgba(255,0,242,0.2); }
-
-        .acc-name {
-            font-size: 18px;
+        .balance-tag span {
             font-weight: 800;
-            margin-bottom: 5px;
+        }
+
+        .map-card.aset .balance-tag span, .map-card.beban .balance-tag span { color: var(--c-aset); }
+        .map-card.utang .balance-tag span, .map-card.modal .balance-tag span, .map-card.pendapatan .balance-tag span { color: var(--c-utang); }
+
+        .account-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 10px;
+            flex-grow: 1;
+        }
+
+        .acc-row {
+            display: flex;
+            gap: 8px;
+            color: #cbd5e1;
+        }
+
+        .acc-num {
+            font-family: monospace;
+            font-weight: 700;
+        }
+
+        .map-card.aset .acc-num { color: var(--c-aset); }
+        .map-card.utang .acc-num { color: var(--c-utang); }
+        .map-card.modal .acc-num { color: var(--c-modal); }
+        .map-card.pendapatan .acc-num { color: var(--c-pendapatan); }
+        .map-card.beban .acc-num { color: var(--c-beban); }
+
+        .sparkline {
+            width: 100%;
+            height: 20px;
+            margin-top: 6px;
+        }
+
+        /* ACCOUNTING RULES */
+        .rules-container {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            backdrop-filter: blur(12px);
+        }
+
+        .rule-box {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px 20px;
+            border-radius: 10px;
+            width: 42%;
+        }
+
+        .rule-box.debit { border: 1px solid rgba(16, 185, 129, 0.3); }
+        .rule-box.kredit { border: 1px solid rgba(245, 158, 11, 0.3); }
+
+        .rule-badge {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .rule-box.debit .rule-badge { background: rgba(16, 185, 129, 0.2); color: var(--c-aset); }
+        .rule-box.kredit .rule-badge { background: rgba(245, 158, 11, 0.2); color: var(--c-pendapatan); }
+
+        .rule-content {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .rule-formula {
+            font-size: 13px;
+            font-weight: 800;
             color: #fff;
-            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .acc-desc {
+        .rule-sub {
+            font-size: 9px;
+            color: var(--text-muted);
+            margin: 2px 0;
+        }
+
+        .rule-result {
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .rule-box.debit .rule-result { color: var(--c-aset); }
+        .rule-box.kredit .rule-result { color: var(--c-pendapatan); }
+
+        .center-scale {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            background: rgba(0, 255, 204, 0.05);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+            font-size: 24px;
+        }
+
+        /* BOTTOM EQUATION FLOW */
+        .equation-bar {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(12px);
             font-size: 11px;
-            color: #888;
-            line-height: 1.4;
+            font-weight: 800;
         }
 
-        /* Footer HUD */
-        footer {
+        .eq-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .eq-tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .eq-aset { background: rgba(16, 185, 129, 0.15); color: var(--c-aset); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .eq-beban { background: rgba(168, 85, 247, 0.15); color: var(--c-beban); border: 1px solid rgba(168, 85, 247, 0.3); }
+        .eq-utang { background: rgba(239, 68, 68, 0.15); color: var(--c-utang); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .eq-modal { background: rgba(59, 130, 246, 0.15); color: var(--c-modal); border: 1px solid rgba(59, 130, 246, 0.3); }
+        .eq-pendapatan { background: rgba(245, 158, 11, 0.15); color: var(--c-pendapatan); border: 1px solid rgba(245, 158, 11, 0.3); }
+
+        /* RIGHT PANEL LIST */
+        .right-panel {
+            width: 230px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            backdrop-filter: blur(12px);
+        }
+
+        .db-title {
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #fff;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
+        }
+
+        .db-group {
+            margin-bottom: 10px;
+        }
+
+        .db-group-title {
             font-size: 10px;
-            color: #555;
-            padding: 10px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            letter-spacing: 3px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        /* Extra Tech Decoration */
-        .scanner-bar {
-            position: absolute;
-            width: 100%;
-            height: 4px;
-            background: rgba(0, 242, 255, 0.1);
-            top: 0;
-            animation: sweep 4s ease-in-out infinite;
-            z-index: 5;
+        .db-group-title::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
         }
 
-        @keyframes sweep {
-            0% { top: 0%; }
-            50% { top: 100%; }
-            100% { top: 0%; }
+        .gt-aset::before { background: var(--c-aset); }
+        .gt-utang::before { background: var(--c-utang); }
+        .gt-modal::before { background: var(--c-modal); }
+        .gt-pendapatan::before { background: var(--c-pendapatan); }
+        .gt-beban::before { background: var(--c-beban); }
+
+        .gt-aset { color: var(--c-aset); }
+        .gt-utang { color: var(--c-utang); }
+        .gt-modal { color: var(--c-modal); }
+        .gt-pendapatan { color: var(--c-pendapatan); }
+        .gt-beban { color: var(--c-beban); }
+
+        .db-item {
+            font-size: 9px;
+            color: #94a3b8;
+            padding-left: 12px;
+            margin-bottom: 2px;
+            display: flex;
+            gap: 6px;
         }
 
+        .sys-log {
+            font-size: 8px;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 8px;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
 
-    <canvas id="canvas-bg"></canvas>
-    <div class="overlay-vignette"></div>
-    <div class="scanner-bar"></div>
-
-    <div class="main-ui">
-        <header>
-            <div class="top-left">
-                <h1>System.Account_Ref</h1>
-                <p>Status: Synchronized // Active_Monitoring</p>
+    <div class="sidebar">
+        <div>
+            <div class="brand">
+                <div class="cube-icon">🧊</div>
+                <span>ACCOUNTING OS</span>
             </div>
-            <div class="hud-clock" id="clock">00:00:00</div>
+            <div class="nav-menu">
+                <div class="nav-item active">📊 DASHBOARD</div>
+                <div class="nav-item">📁 ACCOUNTS</div>
+                <div class="nav-item">🎓 LEARN MODE</div>
+                <div class="nav-item">🧠 MEMORY MAP</div>
+                <div class="nav-item">🎯 PRACTICE</div>
+                <div class="nav-item">📈 ANALYTICS</div>
+                <div class="nav-item">⚙️ SETTINGS</div>
+            </div>
+        </div>
+
+        <div>
+            <div class="quote-box">
+                "Akuntansi adalah bahasa bisnis. Kuasai bahasanya, kuasai masa depanmu."
+            </div>
+            <div class="memory-boost">
+                MEMORY BOOST <span style="float: right; color: var(--c-aset);">85%</span>
+                <div class="progress-bar"><div class="progress-fill"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <div class="header-title">
+                <h1>ACCOUNTING SYSTEM</h1>
+                <p>PAHAMI • INGAT • TERAPKAN</p>
+            </div>
+            <div class="system-status">
+                <span style="width: 6px; height: 6px; background: var(--c-aset); border-radius: 50%; box-shadow: 0 0 6px var(--c-aset);"></span>
+                SYSTEM STATUS: OPTIMAL
+            </div>
+            <div class="clock-box">
+                <div class="clock-time" id="clock-time">00:00</div>
+                <div class="clock-date" id="clock-date">WED, 15 MAY 2024</div>
+            </div>
         </header>
 
-        <main class="grid-container" id="grid">
-            <div class="tech-card" style="animation-delay: 0.1s">
-                <div class="card-header">
-                    <span class="ref-num">111</span>
-                    <span class="type-tag debit-style">Debit (+)</span>
+        <div>
+            <div class="section-label">ACCOUNT MAP</div>
+            <div class="account-map-grid">
+                <div class="map-card aset">
+                    <div class="card-header">
+                        <div class="card-icon">💰</div>
+                        <div class="card-title">ASET</div>
+                        <div class="balance-tag">Normal Balance: <span>DEBIT</span></div>
+                    </div>
+                    <div class="account-list">
+                        <div class="acc-row"><span class="acc-num">111</span><span>Kas</span></div>
+                        <div class="acc-row"><span class="acc-num">112</span><span>Piutang Usaha</span></div>
+                        <div class="acc-row"><span class="acc-num">113</span><span>Perlengkapan</span></div>
+                        <div class="acc-row"><span class="acc-num">114</span><span>Sewa DDM</span></div>
+                        <div class="acc-row"><span class="acc-num">121</span><span>Peralatan</span></div>
+                    </div>
+                    <svg class="sparkline" viewBox="0 0 100 20">
+                        <path d="M0,15 L20,10 L40,18 L60,5 L80,12 L100,2" fill="none" stroke="#10b981" stroke-width="2"/>
+                    </svg>
                 </div>
-                <div>
-                    <div class="acc-name">Kas</div>
-                    <div class="acc-desc">Liquid asset. Tunai & saldo bank operasional.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 0.2s">
-                <div class="card-header">
-                    <span class="ref-num">112</span>
-                    <span class="type-tag debit-style">Debit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Piutang Usaha</div>
-                    <div class="acc-desc">Tagihan atas jasa/barang yang telah diserahkan.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 0.3s">
-                <div class="card-header">
-                    <span class="ref-num">113</span>
-                    <span class="type-tag debit-style">Debit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Perlengkapan</div>
-                    <div class="acc-desc">Barang habis pakai untuk operasional kantor.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 0.4s">
-                <div class="card-header">
-                    <span class="ref-num">114</span>
-                    <span class="type-tag debit-style">Debit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Sewa DDM</div>
-                    <div class="acc-desc">Sewa dibayar dimuka. Manfaat masa depan.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 0.5s">
-                <div class="card-header">
-                    <span class="ref-num">121</span>
-                    <span class="type-tag debit-style">Debit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Peralatan</div>
-                    <div class="acc-desc">Aset tetap dengan masa manfaat panjang.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 0.6s">
-                <div class="card-header">
-                    <span class="ref-num">122</span>
-                    <span class="type-tag kredit-style">Kredit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Akum. Peny</div>
-                    <div class="acc-desc">Kontra aset pengurang nilai peralatan.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 0.7s">
-                <div class="card-header">
-                    <span class="ref-num">211</span>
-                    <span class="type-tag kredit-style">Kredit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Utang Usaha</div>
-                    <div class="acc-desc">Kewajiban kepada pihak ketiga/supplier.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 0.8s">
-                <div class="card-header">
-                    <span class="ref-num">212</span>
-                    <span class="type-tag kredit-style">Kredit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Utang Gaji</div>
-                    <div class="acc-desc">Beban gaji yang belum dibayarkan.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 0.9s">
-                <div class="card-header">
-                    <span class="ref-num">311</span>
-                    <span class="type-tag kredit-style">Kredit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Modal Usaha</div>
-                    <div class="acc-desc">Ekuitas/hak pemilik atas kekayaan perusahaan.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 1.0s">
-                <div class="card-header">
-                    <span class="ref-num">312</span>
-                    <span class="type-tag debit-style">Debit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Prive</div>
-                    <div class="acc-desc">Penarikan modal untuk keperluan pribadi.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 1.1s">
-                <div class="card-header">
-                    <span class="ref-num">411</span>
-                    <span class="type-tag kredit-style">Kredit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Pendapatan</div>
-                    <div class="acc-desc">Arus masuk aset atas penyerahan jasa.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 1.2s">
-                <div class="card-header">
-                    <span class="ref-num">511</span>
-                    <span class="type-tag debit-style">Debit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Beban Listrik</div>
-                    <div class="acc-desc">Biaya pemanfaatan utilitas energi.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 1.3s">
-                <div class="card-header">
-                    <span class="ref-num">513</span>
-                    <span class="type-tag debit-style">Debit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Beban Sewa</div>
-                    <div class="acc-desc">Beban atas penggunaan tempat/kantor.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 1.4s">
-                <div class="card-header">
-                    <span class="ref-num">514</span>
-                    <span class="type-tag debit-style">Debit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Beban Peny</div>
-                    <div class="acc-desc">Alokasi beban atas penggunaan peralatan.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 1.5s">
-                <div class="card-header">
-                    <span class="ref-num">515</span>
-                    <span class="type-tag debit-style">Debit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Beban Gaji</div>
-                    <div class="acc-desc">Imbalan jasa karyawan selama satu periode.</div>
-                </div>
-            </div>
-            <div class="tech-card" style="animation-delay: 1.6s">
-                <div class="card-header">
-                    <span class="ref-num">516</span>
-                    <span class="type-tag debit-style">Debit (+)</span>
-                </div>
-                <div>
-                    <div class="acc-name">Beban Perlengkapan</div>
-                    <div class="acc-desc">Nilai perlengkapan yang sudah terpakai.</div>
-                </div>
-            </div>
-        </main>
 
-        <footer>
-            <div id="status">CORE_SYSTEM_ONLINE</div>
-            <div>STABLE_CONNECTION // DATA_STREAM_053</div>
-        </footer>
+                <div class="map-card utang">
+                    <div class="card-header">
+                        <div class="card-icon">🏛️</div>
+                        <div class="card-title">UTANG</div>
+                        <div class="balance-tag">Normal Balance: <span>KREDIT</span></div>
+                    </div>
+                    <div class="account-list">
+                        <div class="acc-row"><span class="acc-num">211</span><span>Utang Usaha</span></div>
+                        <div class="acc-row"><span class="acc-num">212</span><span>Utang Gaji</span></div>
+                    </div>
+                    <svg class="sparkline" viewBox="0 0 100 20">
+                        <path d="M0,10 L25,15 L50,8 L75,12 L100,5" fill="none" stroke="#ef4444" stroke-width="2"/>
+                    </svg>
+                </div>
+
+                <div class="map-card modal">
+                    <div class="card-header">
+                        <div class="card-icon">👤</div>
+                        <div class="card-title">MODAL</div>
+                        <div class="balance-tag">Normal Balance: <span>KREDIT</span></div>
+                    </div>
+                    <div class="account-list">
+                        <div class="acc-row"><span class="acc-num">311</span><span>Modal</span></div>
+                        <div class="acc-row"><span class="acc-num">312</span><span>Prive</span></div>
+                    </div>
+                    <svg class="sparkline" viewBox="0 0 100 20">
+                        <path d="M0,18 L30,8 L60,14 L100,4" fill="none" stroke="#3b82f6" stroke-width="2"/>
+                    </svg>
+                </div>
+
+                <div class="map-card pendapatan">
+                    <div class="card-header">
+                        <div class="card-icon">📈</div>
+                        <div class="card-title">PENDAPATAN</div>
+                        <div class="balance-tag">Normal Balance: <span>KREDIT</span></div>
+                    </div>
+                    <div class="account-list">
+                        <div class="acc-row"><span class="acc-num">411</span><span>Pendapatan Jasa</span></div>
+                    </div>
+                    <svg class="sparkline" viewBox="0 0 100 20">
+                        <path d="M0,15 L40,12 L70,18 L100,2" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                    </svg>
+                </div>
+
+                <div class="map-card beban">
+                    <div class="card-header">
+                        <div class="card-icon">📉</div>
+                        <div class="card-title">BEBAN</div>
+                        <div class="balance-tag">Normal Balance: <span>DEBIT</span></div>
+                    </div>
+                    <div class="account-list">
+                        <div class="acc-row"><span class="acc-num">511</span><span>Beban Listrik</span></div>
+                        <div class="acc-row"><span class="acc-num">513</span><span>Beban Sewa</span></div>
+                        <div class="acc-row"><span class="acc-num">514</span><span>Beban Penyusutan</span></div>
+                        <div class="acc-row"><span class="acc-num">515</span><span>Beban Gaji</span></div>
+                        <div class="acc-row"><span class="acc-num">516</span><span>Beban Perlengkapan</span></div>
+                    </div>
+                    <svg class="sparkline" viewBox="0 0 100 20">
+                        <path d="M0,5 L30,15 L60,8 L100,18" fill="none" stroke="#a855f7" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-label">ACCOUNTING RULES</div>
+            <div class="rules-container">
+                <div class="rule-box debit">
+                    <div class="rule-badge">RULE 01</div>
+                    <div class="rule-content">
+                        <div class="rule-formula">ASET + BEBAN</div>
+                        <div class="rule-sub">( Bertambah )</div>
+                        <div class="rule-result">= DEBIT</div>
+                    </div>
+                </div>
+
+                <div class="center-scale">⚖️</div>
+
+                <div class="rule-box kredit">
+                    <div class="rule-content">
+                        <div class="rule-formula">UTANG + MODAL + PENDAPATAN</div>
+                        <div class="rule-sub">( Bertambah )</div>
+                        <div class="rule-result">= KREDIT</div>
+                    </div>
+                    <div class="rule-badge">RULE 02</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="equation-bar">
+            <span style="color: var(--text-muted); font-size: 9px;">FLOW OF ACCOUNTING EQUATION</span>
+            <div class="eq-group">
+                <div class="eq-tag eq-aset">ASET</div>
+                <span>+</span>
+                <div class="eq-tag eq-beban">BEBAN</div>
+                <span style="color: var(--c-aset);">→ DEBIT</span>
+            </div>
+            <span>=</span>
+            <div class="eq-group">
+                <div class="eq-tag eq-utang">UTANG</div>
+                <span>+</span>
+                <div class="eq-tag eq-modal">MODAL</div>
+                <span>+</span>
+                <div class="eq-tag eq-pendapatan">PENDAPATAN</div>
+                <span style="color: var(--c-pendapatan);">→ KREDIT</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div>
+            <div class="db-title">
+                <span>ACCOUNT DATABASE</span>
+                <span style="color: var(--text-muted); font-size: 8px;">REF. LIST</span>
+            </div>
+
+            <div class="db-group">
+                <div class="db-group-title gt-aset">ASET</div>
+                <div class="db-item"><span style="color:#fff;">111</span> Kas</div>
+                <div class="db-item"><span style="color:#fff;">112</span> Piutang Usaha</div>
+                <div class="db-item"><span style="color:#fff;">113</span> Perlengkapan</div>
+                <div class="db-item"><span style="color:#fff;">114</span> Sewa DDM</div>
+                <div class="db-item"><span style="color:#fff;">121</span> Peralatan</div>
+            </div>
+
+            <div class="db-group">
+                <div class="db-group-title gt-utang">UTANG</div>
+                <div class="db-item"><span style="color:#fff;">211</span> Utang Usaha</div>
+                <div class="db-item"><span style="color:#fff;">212</span> Utang Gaji</div>
+            </div>
+
+            <div class="db-group">
+                <div class="db-group-title gt-modal">MODAL</div>
+                <div class="db-item"><span style="color:#fff;">311</span> Modal</div>
+                <div class="db-item"><span style="color:#fff;">312</span> Prive</div>
+            </div>
+
+            <div class="db-group">
+                <div class="db-group-title gt-pendapatan">PENDAPATAN</div>
+                <div class="db-item"><span style="color:#fff;">411</span> Pendapatan Jasa</div>
+            </div>
+
+            <div class="db-group">
+                <div class="db-group-title gt-beban">BEBAN</div>
+                <div class="db-item"><span style="color:#fff;">511</span> Beban Listrik</div>
+                <div class="db-item"><span style="color:#fff;">513</span> Beban Sewa</div>
+                <div class="db-item"><span style="color:#fff;">514</span> Beban Penyusutan</div>
+                <div class="db-item"><span style="color:#fff;">515</span> Beban Gaji</div>
+                <div class="db-item"><span style="color:#fff;">516</span> Beban Perlengkapan</div>
+            </div>
+        </div>
+
+        <div class="sys-log">
+            ■ SYS LOG<br>
+            > All systems running smoothly.
+        </div>
     </div>
 
     <script>
-        // Digital Clock
         function updateClock() {
             const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('en-GB');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock-time').textContent = `${hours}:${minutes}`;
+
+            const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+            document.getElementById('clock-date').textContent = now.toLocaleDateString('en-US', options).toUpperCase();
         }
         setInterval(updateClock, 1000);
         updateClock();
-
-        // Canvas Background Grid
-        const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        function drawGrid() {
-            ctx.clearRect(0,0,width,height);
-            ctx.strokeStyle = 'rgba(0, 242, 255, 0.1)';
-            ctx.lineWidth = 1;
-
-            const spacing = 50;
-            for(let x = 0; x < width; x += spacing) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, height);
-                ctx.stroke();
-            }
-            for(let y = 0; y < height; y += spacing) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(width, y);
-                ctx.stroke();
-            }
-        }
-        
-        setInterval(drawGrid, 100);
     </script>
 </body>
 </html>
