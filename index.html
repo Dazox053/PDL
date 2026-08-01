@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kartu Hafalan Ref Akun - Fullscreen Table Wallpaper</title>
+    <title>Ref Akun - Cyber Glow Wallpaper</title>
     <style>
         :root {
-            --bg-dark: #080c14;
-            --card-bg: rgba(15, 23, 42, 0.75);
-            --card-border-debit: rgba(56, 189, 248, 0.4);
-            --card-border-kredit: rgba(251, 113, 133, 0.4);
+            --bg-dark: #060911;
+            --card-bg: rgba(13, 20, 36, 0.65);
+            --debit-glow: #38bdf8;
+            --kredit-glow: #ff5861;
+            --accent-gold: #fbbf24;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --debit-color: #38bdf8;
-            --kredit-color: #fb7185;
-            --accent-gold: #facc15;
             --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
@@ -35,12 +33,11 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 24px 32px;
-            cursor: none; /* Menyembunyikan kursor */
+            padding: 20px 28px;
+            cursor: none;
             position: relative;
         }
 
-        /* Canvas Particle Background */
         #bg-canvas {
             position: absolute;
             top: 0;
@@ -58,110 +55,126 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 16px;
+            gap: 12px;
         }
 
-        /* Top Header & Quick Guide Bar */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(13, 20, 36, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
-            padding: 14px 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            padding: 12px 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
         .title-group h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-size: 1.4rem;
+            font-weight: 900;
             letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
         }
 
         .title-group p {
             color: var(--text-muted);
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 500;
         }
 
         .guide-box {
             display: flex;
-            gap: 20px;
+            gap: 16px;
             align-items: center;
         }
 
         .guide-tag {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
             padding: 6px 14px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             gap: 8px;
+            backdrop-filter: blur(8px);
         }
 
         .tag-debit {
-            background: rgba(56, 189, 248, 0.15);
-            border: 1px solid var(--debit-color);
-            color: var(--debit-color);
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid var(--debit-glow);
+            color: var(--debit-glow);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
         }
 
         .tag-kredit {
-            background: rgba(251, 113, 133, 0.15);
-            border: 1px solid var(--kredit-color);
-            color: var(--kredit-color);
+            background: rgba(255, 88, 97, 0.12);
+            border: 1px solid var(--kredit-glow);
+            color: var(--kredit-glow);
+            box-shadow: 0 0 12px rgba(255, 88, 97, 0.2);
         }
 
         .clock-badge {
-            font-family: monospace;
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.15rem;
+            font-weight: 800;
             color: #ffffff;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
             padding: 6px 14px;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
         }
 
-        /* Floating Grid Stage */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(4, 1fr);
-            gap: 14px;
+            gap: 12px;
             flex-grow: 1;
-            margin: 4px 0;
         }
 
-        /* Card / Table Cell Styling */
         .card {
             background: var(--card-bg);
             backdrop-filter: blur(14px);
             border-radius: 16px;
-            padding: 16px 20px;
+            padding: 14px 18px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
-            animation: float 6s ease-in-out infinite alternate;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            animation: float 5s ease-in-out infinite alternate;
+            transition: all 0.3s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.02));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
         }
 
         .card.debit {
-            border: 1px solid var(--card-border-debit);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.08);
         }
 
         .card.kredit {
-            border: 1px solid var(--card-border-kredit);
+            border: 1px solid rgba(255, 88, 97, 0.3);
+            box-shadow: 0 0 15px rgba(255, 88, 97, 0.08);
         }
 
-        /* Staggered Floating Animation for Melayang Effect */
         .card:nth-child(1)  { animation-delay: 0.0s; }
         .card:nth-child(2)  { animation-delay: 0.4s; }
         .card:nth-child(3)  { animation-delay: 0.8s; }
@@ -181,7 +194,7 @@
 
         @keyframes float {
             0% { transform: translateY(0px); }
-            100% { transform: translateY(-8px); }
+            100% { transform: translateY(-7px); }
         }
 
         .card-top {
@@ -191,57 +204,59 @@
         }
 
         .ref-code {
-            font-size: 1.35rem;
+            font-size: 1.3rem;
             font-weight: 900;
             color: var(--accent-gold);
             letter-spacing: 0.05em;
-            font-family: monospace;
+            font-family: 'Courier New', Courier, monospace;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
         }
 
         .badge {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 800;
-            padding: 3px 10px;
-            border-radius: 20px;
+            padding: 3px 8px;
+            border-radius: 6px;
             letter-spacing: 0.05em;
         }
 
         .badge.debit {
-            background: rgba(56, 189, 248, 0.2);
-            color: var(--debit-color);
+            background: rgba(56, 189, 248, 0.18);
+            color: var(--debit-glow);
+            border: 1px solid rgba(56, 189, 248, 0.3);
         }
 
         .badge.kredit {
-            background: rgba(251, 113, 133, 0.2);
-            color: var(--kredit-color);
+            background: rgba(255, 88, 97, 0.18);
+            color: var(--kredit-glow);
+            border: 1px solid rgba(255, 88, 97, 0.3);
         }
 
         .account-title {
-            font-size: 1.15rem;
-            font-weight: 800;
+            font-size: 1.1rem;
+            font-weight: 850;
             color: #ffffff;
-            line-height: 1.25;
-            margin: 6px 0 2px 0;
+            line-height: 1.2;
+            margin: 4px 0 2px 0;
             letter-spacing: -0.01em;
         }
 
         .account-desc {
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             color: var(--text-muted);
-            line-height: 1.35;
+            line-height: 1.3;
         }
 
-        /* Footer Info */
         footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(15, 23, 42, 0.5);
+            background: rgba(13, 20, 36, 0.5);
             backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 12px;
-            padding: 8px 20px;
-            font-size: 0.8rem;
+            border-radius: 10px;
+            padding: 6px 18px;
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
     </style>
@@ -253,8 +268,8 @@
     <div class="main-container">
         <header>
             <div class="title-group">
-                <h1>RUANG HAFALAN REF AKUN</h1>
-                <p>Akuntansi Dasar • Fullscreen Floating Reference Table</p>
+                <h1>Ruang Hafalan Ref Akun</h1>
+                <p>Akuntansi Dasar • Cyber Floating Grid Desktop</p>
             </div>
             <div class="guide-box">
                 <div class="guide-tag tag-debit">
@@ -270,7 +285,6 @@
         </header>
 
         <main class="grid-container">
-            <!-- 1xx ASET -->
             <div class="card debit">
                 <div class="card-top">
                     <span class="ref-code">111</span>
@@ -326,7 +340,6 @@
                 </div>
             </div>
 
-            <!-- KONTRA ASET -->
             <div class="card kredit">
                 <div class="card-top">
                     <span class="ref-code">122</span>
@@ -338,7 +351,6 @@
                 </div>
             </div>
 
-            <!-- 2xx UTANG & 3xx MODAL -->
             <div class="card kredit">
                 <div class="card-top">
                     <span class="ref-code">211</span>
@@ -383,7 +395,6 @@
                 </div>
             </div>
 
-            <!-- 4xx PENDAPATAN & 5xx BEBAN -->
             <div class="card kredit">
                 <div class="card-top">
                     <span class="ref-code">411</span>
@@ -452,13 +463,12 @@
         </main>
 
         <footer>
-            <span>Clean Fullscreen Floating Table Wallpaper • Ultra Sharp Typography</span>
-            <span>No Cursor • No Distractions</span>
+            <span>Cyber Aesthetic Live Wallpaper • Ultra Sharp Typography</span>
+            <span>Fullscreen Display • No Cursor</span>
         </footer>
     </div>
 
     <script>
-        // Clock
         function updateClock() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -469,7 +479,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Smooth Background Particles
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -481,15 +490,15 @@
         resizeCanvas();
 
         const particles = [];
-        for (let i = 0; i < 35; i++) {
+        for (let i = 0; i < 45; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
                 radius: Math.random() * 2 + 0.5,
-                color: Math.random() > 0.5 ? '#38bdf8' : '#fb7185',
-                vx: (Math.random() - 0.5) * 0.25,
-                vy: (Math.random() - 0.5) * 0.25,
-                alpha: Math.random() * 0.35 + 0.15
+                color: Math.random() > 0.5 ? '#38bdf8' : '#ff5861',
+                vx: (Math.random() - 0.5) * 0.2,
+                vy: (Math.random() - 0.5) * 0.2,
+                alpha: Math.random() * 0.35 + 0.1
             });
         }
 
